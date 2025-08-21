@@ -6,6 +6,8 @@ import backend.ASP.dto.ProdutoDTO;
 import backend.ASP.dto.ProdutoListagemDTO;
 import backend.ASP.service.ProdutoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -29,8 +31,8 @@ public class ProdutoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ProdutoListagemDTO>> listarTodos() {
-        return ResponseEntity.ok(service.listarTodos());
+    public ResponseEntity<Page<ProdutoListagemDTO>> listarTodos(Pageable pageable) {
+        return ResponseEntity.ok(service.listarTodos(pageable));
     }
 
     @GetMapping("/{id}")

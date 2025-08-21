@@ -26,6 +26,8 @@ public class Produto {
     @Column(nullable = false)
     private Categoria categoria;
 
+    public Produto(){}
+
     public Produto(ProdutoCadastroDTO dto){
         this.nome = dto.nome();
         this.descricao = dto.descricao();
