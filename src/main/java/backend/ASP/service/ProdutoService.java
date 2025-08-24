@@ -26,9 +26,11 @@ public class ProdutoService {
     }
 
     public ProdutoDTO criarProduto(ProdutoCadastroDTO request){
+        log.info("Iniciando cadastro de produto: {}", request.nome());
         Produto produto = new Produto(request
         );
         Produto salvo = repository.save(produto);
+        log.info("Produto cadastrado com sucesso: id={}, nome={}", salvo.getId(), salvo.getNome());
         return new ProdutoDTO(salvo);
     }
 
@@ -48,14 +50,16 @@ public class ProdutoService {
         Produto produto = repository.getReferenceById(id);
         produto.atualizarInformacoes(dto);
         Produto atualizado = repository.save(produto);
-        log.info("Produto atualizado: {}", atualizado.getNome());
+        log.info("Produto atualizado: id={}, nome={}", atualizado.getId(), atualizado.getNome());
         return new ProdutoDTO(atualizado);
     }
 
     public void deletarProduto(Long id){
         Produto p = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+        log.warn("Solicitação de exclusão recebida para produto id={}", id);
         repository.delete(p);
+        log.info("Produto excluído com sucesso: id={}", id);
     }
 
 }
