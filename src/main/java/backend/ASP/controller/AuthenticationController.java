@@ -1,6 +1,8 @@
 package backend.ASP.controller;
 
+import backend.ASP.config.security.TokenService;
 import backend.ASP.dto.AuthenticationDTO;
+import backend.ASP.dto.LoginResponseDTO;
 import backend.ASP.dto.RegisterDTO;
 import backend.ASP.entity.user.User;
 import backend.ASP.repository.UserRepository;
@@ -20,12 +22,17 @@ public class AuthenticationController {
     @Autowired
     private UserRepository repository;
 
+    @Autowired
+    private TokenService tokenService;
+
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody @Valid AuthenticationDTO data){
         var usernamePassword = new UsernamePasswordAuthenticationToken(data.login(), data.password());
         var auth = this.authenticationManager.authenticate(usernamePassword);
 
-        return ResponseEntity.ok().build();
+        var token = tokenService.generateToken((User) auth.getPrincipal());
+
+        return ResponseEntity.ok(new LoginResponseDTO(token));
     }
 
     @PostMapping("/register")
