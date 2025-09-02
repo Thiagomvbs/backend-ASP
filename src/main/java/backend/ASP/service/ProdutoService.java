@@ -4,7 +4,7 @@ import backend.ASP.dto.ProdutoAtualizacaoDTO;
 import backend.ASP.dto.ProdutoCadastroDTO;
 import backend.ASP.dto.ProdutoDTO;
 import backend.ASP.dto.ProdutoListagemDTO;
-import backend.ASP.entity.Produto;
+import backend.ASP.entity.products.Produto;
 import backend.ASP.repository.ProdutoRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

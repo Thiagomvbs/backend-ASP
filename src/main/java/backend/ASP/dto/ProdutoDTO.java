@@ -1,6 +1,6 @@
 package backend.ASP.dto;
 
-import backend.ASP.entity.Produto;
+import backend.ASP.entity.products.Produto;
 import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;

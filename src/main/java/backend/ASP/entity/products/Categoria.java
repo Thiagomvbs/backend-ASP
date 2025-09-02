@@ -1,4 +1,4 @@
-package backend.ASP.entity;
+package backend.ASP.entity.products;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

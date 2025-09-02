@@ -1,7 +1,8 @@
-package backend.ASP.entity;
+package backend.ASP.entity.products;
 
 import backend.ASP.dto.ProdutoAtualizacaoDTO;
 import backend.ASP.dto.ProdutoCadastroDTO;
+import backend.ASP.entity.products.Categoria;
 import jakarta.persistence.*;
 import lombok.*;
 
