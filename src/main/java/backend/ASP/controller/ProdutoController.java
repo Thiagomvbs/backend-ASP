@@ -33,12 +33,12 @@ public class ProdutoController {
 
     @GetMapping({"/", ""})
     public ResponseEntity<Page<ProdutoListagemDTO>> listarTodos(@RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size) {
+            @RequestParam(defaultValue = "20") int size, @RequestParam(required = false) String nome) {
 
         int pageIndex = (page > 0) ? page - 1 : 0;
 
         Pageable pageable = PageRequest.of(pageIndex, size);
-        return ResponseEntity.ok(service.listarTodos(pageable));
+        return ResponseEntity.ok(service.listarTodos(nome, pageable));
     }
 
 

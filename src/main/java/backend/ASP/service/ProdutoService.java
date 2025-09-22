@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 public class ProdutoService {
     @Autowired
     private final ProdutoRepository repository;
-
     private static final Logger log = LoggerFactory.getLogger(ProdutoService.class);
     public ProdutoService(ProdutoRepository repository) {
         this.repository = repository;
@@ -33,9 +32,12 @@ public class ProdutoService {
         return new ProdutoDTO(salvo);
     }
 
-    public Page<ProdutoListagemDTO> listarTodos(Pageable pageable){
-        return repository.findAll(pageable)
-                .map(ProdutoListagemDTO::new);
+    public Page<ProdutoListagemDTO> listarTodos(String nome, Pageable pageable){
+        if (nome != null && !nome.isBlank()) {
+            return repository.findByNomeContainingIgnoreCase(nome, pageable)
+                    .map(ProdutoListagemDTO::new);
+        }
+        return repository.findAll(pageable).map(ProdutoListagemDTO::new);
     }
 
     public ProdutoDTO buscarPorId(Long id){
