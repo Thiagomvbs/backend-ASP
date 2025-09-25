@@ -35,7 +35,7 @@ public class Produto {
         this.descricao = dto.descricao();
         this.categoria = Categoria.valueOf(dto.categoria());
         this.preco = dto.preco();
-        this.imagemUrl = dto.imagemUrl();
+
     }
 
     public Long getId() {

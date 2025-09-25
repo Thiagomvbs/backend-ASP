@@ -12,6 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 
 @Service
@@ -25,8 +32,7 @@ public class ProdutoService {
 
     public ProdutoDTO criarProduto(ProdutoCadastroDTO request){
         log.info("Iniciando cadastro de produto: {}", request.nome());
-        Produto produto = new Produto(request
-        );
+        Produto produto = new Produto(request);
         Produto salvo = repository.save(produto);
         log.info("Produto cadastrado com sucesso: id={}, nome={}", salvo.getId(), salvo.getNome());
         return new ProdutoDTO(salvo);
@@ -63,4 +69,25 @@ public class ProdutoService {
         log.info("Produto excluído com sucesso: id={}", id);
     }
 
+    public ProdutoDTO adicionarImagem(Long id, MultipartFile imagem) {
+        Produto produto = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+
+        if (imagem != null && !imagem.isEmpty()) {
+            String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
+            Path path = Paths.get("uploads/" + nomeArquivo);
+
+            try {
+                Files.createDirectories(path.getParent());
+                imagem.transferTo(path);
+                produto.setImagemUrl("/uploads/" + nomeArquivo);
+            } catch (IOException e) {
+                log.error("Erro ao salvar imagem", e);
+                throw new RuntimeException("Erro ao salvar imagem", e);
+            }
+        }
+
+        Produto salvo = repository.save(produto);
+        return new ProdutoDTO(salvo);
+    }
 }

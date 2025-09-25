@@ -4,15 +4,19 @@ import backend.ASP.dto.ProdutoAtualizacaoDTO;
 import backend.ASP.dto.ProdutoCadastroDTO;
 import backend.ASP.dto.ProdutoDTO;
 import backend.ASP.dto.ProdutoListagemDTO;
+import backend.ASP.entity.products.Categoria;
 import backend.ASP.service.ProdutoService;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Arrays;
 import java.util.List;
 
 @RestController
@@ -31,13 +35,22 @@ public class ProdutoController {
         return ResponseEntity.ok(service.criarProduto(request));
     }
 
+    @PostMapping("/{id}/imagem")
+    @Transactional
+    public ResponseEntity<ProdutoDTO> uploadImagem(
+            @PathVariable Long id,
+            @RequestParam("imagem") MultipartFile imagem) {
+        ProdutoDTO atualizado = service.adicionarImagem(id, imagem);
+        return ResponseEntity.ok(atualizado);
+    }
+
     @GetMapping({"/", ""})
     public ResponseEntity<Page<ProdutoListagemDTO>> listarTodos(@RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int size, @RequestParam(required = false) String nome) {
+            @RequestParam(defaultValue = "20") int size,  @RequestParam(required = false) String nome) {
 
         int pageIndex = (page > 0) ? page - 1 : 0;
 
-        Pageable pageable = PageRequest.of(pageIndex, size);
+        Pageable pageable = PageRequest.of(pageIndex, size, Sort.by("id").ascending());
         return ResponseEntity.ok(service.listarTodos(nome, pageable));
     }
 
@@ -56,5 +69,13 @@ public class ProdutoController {
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
         service.deletarProduto(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/categorias")
+    public ResponseEntity<List<String>> listarCategorias() {
+        List<String> categorias = Arrays.stream(Categoria.values())
+                .map(Enum::name)
+                .toList();
+        return ResponseEntity.ok(categorias);
     }
 }
