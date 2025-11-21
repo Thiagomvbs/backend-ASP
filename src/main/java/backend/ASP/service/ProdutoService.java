@@ -6,8 +6,6 @@ import backend.ASP.dto.ProdutoDTO;
 import backend.ASP.dto.ProdutoListagemDTO;
 import backend.ASP.entity.products.Produto;
 import backend.ASP.repository.ProdutoRepository;
-import com.cloudinary.Cloudinary;
-import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.UUID;
 
 
@@ -27,12 +20,11 @@ import java.util.UUID;
 public class ProdutoService {
     @Autowired
     private final ProdutoRepository repository;
-    @Autowired
-    private final Cloudinary cloudinary;
+
     private static final Logger log = LoggerFactory.getLogger(ProdutoService.class);
-    public ProdutoService(ProdutoRepository repository, Cloudinary cloudinary) {
+    public ProdutoService(ProdutoRepository repository) {
         this.repository = repository;
-        this.cloudinary = cloudinary;
+
     }
 
     public ProdutoDTO criarProduto(ProdutoCadastroDTO request){
@@ -78,27 +70,6 @@ public class ProdutoService {
         Produto produto = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
-        if (imagem != null && !imagem.isEmpty()) {
-            try {
-                String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
-
-                var uploadResult = cloudinary.uploader().upload(
-                        imagem.getBytes(),
-                        ObjectUtils.asMap(
-                                "folder", "produtos",
-                                "public_id", nomeArquivo,
-                                "resource_type", "image",
-                                "overwrite", true
-                        )
-                );
-                String url = uploadResult.get("secure_url").toString();
-                produto.setImagemUrl(url);
-
-            } catch (Exception e) {
-                log.error("Erro ao enviar imagem para o Cloudinary", e);
-                throw new RuntimeException("Erro ao enviar imagem para o Cloudinary", e);
-            }
-        }
 
         Produto salvo = repository.save(produto);
         return new ProdutoDTO(salvo);
