@@ -6,6 +6,8 @@ import backend.ASP.dto.ProdutoDTO;
 import backend.ASP.dto.ProdutoListagemDTO;
 import backend.ASP.entity.products.Produto;
 import backend.ASP.repository.ProdutoRepository;
+import com.cloudinary.Cloudinary;
+import com.cloudinary.utils.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,12 @@ import java.util.UUID;
 public class ProdutoService {
     @Autowired
     private final ProdutoRepository repository;
+    @Autowired
+    private final Cloudinary cloudinary;
     private static final Logger log = LoggerFactory.getLogger(ProdutoService.class);
-    public ProdutoService(ProdutoRepository repository) {
+    public ProdutoService(ProdutoRepository repository, Cloudinary cloudinary) {
         this.repository = repository;
+        this.cloudinary = cloudinary;
     }
 
     public ProdutoDTO criarProduto(ProdutoCadastroDTO request){
@@ -74,16 +79,24 @@ public class ProdutoService {
                 .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
 
         if (imagem != null && !imagem.isEmpty()) {
-            String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
-            Path path = Paths.get("uploads/" + nomeArquivo);
-
             try {
-                Files.createDirectories(path.getParent());
-                imagem.transferTo(path);
-                produto.setImagemUrl("/uploads/" + nomeArquivo);
-            } catch (IOException e) {
-                log.error("Erro ao salvar imagem", e);
-                throw new RuntimeException("Erro ao salvar imagem", e);
+                String nomeArquivo = UUID.randomUUID() + "_" + imagem.getOriginalFilename();
+
+                var uploadResult = cloudinary.uploader().upload(
+                        imagem.getBytes(),
+                        ObjectUtils.asMap(
+                                "folder", "produtos",
+                                "public_id", nomeArquivo,
+                                "resource_type", "image",
+                                "overwrite", true
+                        )
+                );
+                String url = uploadResult.get("secure_url").toString();
+                produto.setImagemUrl(url);
+
+            } catch (Exception e) {
+                log.error("Erro ao enviar imagem para o Cloudinary", e);
+                throw new RuntimeException("Erro ao enviar imagem para o Cloudinary", e);
             }
         }
 
