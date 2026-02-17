@@ -18,7 +18,9 @@ public record ProdutoCadastroDTO(
         @DecimalMin(value = "0.0", inclusive = false, message = "O preço deve ser maior que 0.0")
         BigDecimal preco,
         @NotBlank
-        String descricao
+        String descricao,
+
+        String imagem
 ) {
 }
 

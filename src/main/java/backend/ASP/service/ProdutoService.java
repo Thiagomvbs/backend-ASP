@@ -13,8 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import java.util.UUID;
 
+import java.util.List;
 
 @Service
 public class ProdutoService {
@@ -35,11 +35,17 @@ public class ProdutoService {
         return new ProdutoDTO(salvo);
     }
 
-    public Page<ProdutoListagemDTO> listarTodos(String nome, Pageable pageable){
+    public Page<ProdutoListagemDTO> listarTodos(String nome, List<String> categorias, Pageable pageable){
         if (nome != null && !nome.isBlank()) {
             return repository.findByNomeContainingIgnoreCase(nome, pageable)
                     .map(ProdutoListagemDTO::new);
         }
+
+        if (categorias != null && !categorias.isEmpty()) {
+            return repository.findByCategoriaIn(categorias, pageable)
+                    .map(ProdutoListagemDTO::new);
+        }
+
         return repository.findAll(pageable).map(ProdutoListagemDTO::new);
     }
 

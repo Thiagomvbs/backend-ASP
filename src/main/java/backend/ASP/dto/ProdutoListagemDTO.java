@@ -9,10 +9,14 @@ public record ProdutoListagemDTO(
         String nome,
         String descricao,
         String categoria,
-        BigDecimal preco) {
+        BigDecimal preco,
+
+        String imagem
+
+) {
 
     public ProdutoListagemDTO(Produto produto){
         this(produto.getId(), produto.getNome(), produto.getDescricao(),
-                String.valueOf(produto.getCategoria()), produto.getPreco());
+                String.valueOf(produto.getCategoria()), produto.getPreco(), produto.getImagem());
     }
 }

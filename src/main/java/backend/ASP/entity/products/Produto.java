@@ -25,8 +25,8 @@ public class Produto {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Categoria categoria;
-    @Column(name = "imagem_url")
-    private String imagemUrl;
+    @Column(name = "imagem")
+    private String imagem;
 
     public Produto(){}
 
@@ -74,11 +74,11 @@ public class Produto {
         return categoria;
     }
 
-    public String getImagemUrl() {
-        return imagemUrl;
+    public String getImagem() {
+        return imagem;
     }
-    public void setImagemUrl(String imagemUrl) {
-        this.imagemUrl = imagemUrl;
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
     }
 
     public void setCategoria(Categoria categoria) {
@@ -98,8 +98,8 @@ public class Produto {
         if(dto.preco() != null){
             this.preco = dto.preco();
         }
-        if(dto.imagemUrl() != null){
-            this.imagemUrl = dto.imagemUrl();
+        if(dto.imagem() != null){
+            this.imagem = dto.imagem();
         }
 
     }

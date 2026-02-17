@@ -12,6 +12,6 @@ public record ProdutoAtualizacaoDTO(
         String categoria,
         @NotNull
         BigDecimal preco,
-        String imagemUrl
+        String imagem
 ) {
 }

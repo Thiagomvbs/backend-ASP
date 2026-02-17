@@ -12,10 +12,10 @@ public record ProdutoDTO(
         String categoria,
         @NotNull
         BigDecimal preco,
-        String imagemUrl
+        String imagem
 ) {
     public ProdutoDTO(Produto produto){
         this(produto.getId(), produto.getNome(), produto.getDescricao(),
-                String.valueOf(produto.getCategoria()), produto.getPreco(), produto.getImagemUrl());
+                String.valueOf(produto.getCategoria()), produto.getPreco(), produto.getImagem());
     }
 }
