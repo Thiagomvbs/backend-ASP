@@ -13,7 +13,6 @@ public record ProdutoCadastroDTO(
 
         @NotBlank(message = "A categoria é obrigatória")
         String categoria,
-        @NotNull
         @Positive
         @DecimalMin(value = "0.0", inclusive = false, message = "O preço deve ser maior que 0.0")
         BigDecimal preco,

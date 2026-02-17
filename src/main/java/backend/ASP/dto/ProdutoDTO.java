@@ -10,7 +10,6 @@ public record ProdutoDTO(
         String nome,
         String descricao,
         String categoria,
-        @NotNull
         BigDecimal preco,
         String imagem
 ) {

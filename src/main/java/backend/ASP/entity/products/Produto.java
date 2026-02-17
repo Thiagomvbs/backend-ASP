@@ -20,7 +20,6 @@ public class Produto {
     private String nome;
     @Column(length = 500)
     private String descricao;
-    @Column(nullable = false)
     private BigDecimal preco;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
