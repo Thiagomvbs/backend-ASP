@@ -41,8 +41,8 @@ public class EmailService {
             }
         }
 
-        helper.setFrom("thiagomvillas@gmail.com");  // remetente
-        helper.setTo("thiagomonteirovbs@gmail.com"); // pra onde será enviado
+        helper.setFrom("thiagomvillas@gmail.com");
+        helper.setTo("thiagomonteirovbs@gmail.com");
         helper.setSubject(assunto);
         helper.setText(conteudo.toString());
 
