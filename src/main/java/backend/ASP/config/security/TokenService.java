@@ -32,7 +32,6 @@ public class TokenService {
         }
     }
 
-    /** Devolve o login do token, ou "" se o token for inválido ou estiver expirado. */
     public String validateToken(String token){
         try{
             Algorithm algorithm = Algorithm.HMAC256(secret);
@@ -47,8 +46,6 @@ public class TokenService {
         }
     }
 
-    // Instant.now() não depende do fuso do servidor (antes: LocalDateTime.now() lido como -03:00,
-    // o que num servidor em UTC fazia o token durar 5h em vez de 2h).
     private Instant generateExpirationDate(){
         return Instant.now().plus(VALIDADE);
     }
