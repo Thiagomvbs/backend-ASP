@@ -28,9 +28,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var token = this.recoverToken(request);
         if (token != null) {
             var login = tokenService.validateToken(token);
-            // Token inválido, expirado ou sem usuário: a requisição segue sem autenticação.
-            // Quem decide se a rota exigia login é o Spring Security (responde 401/403),
-            // e rotas públicas continuam funcionando mesmo com um token velho no navegador.
+            system.out.println("Login recuperado do token: " + login);
             if (login != null && !login.isBlank()) {
                 UserDetails user = userRepository.findByLogin(login);
                 if (user != null) {
