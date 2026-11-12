@@ -32,7 +32,7 @@ public class Produto {
     public Produto(ProdutoCadastroDTO dto){
         this.nome = dto.nome();
         this.descricao = dto.descricao();
-        this.categoria = Categoria.valueOf(dto.categoria());
+        this.categoria = Categoria.fromString(dto.categoria());
         this.preco = dto.preco();
 
     }
@@ -89,7 +89,7 @@ public class Produto {
             this.nome = dto.nome();
         }
         if(dto.categoria() != null){
-            this.categoria = Categoria.valueOf(dto.categoria());
+            this.categoria = Categoria.fromString(dto.categoria());
         }
         if(dto.descricao() != null){
             this.descricao = dto.descricao();

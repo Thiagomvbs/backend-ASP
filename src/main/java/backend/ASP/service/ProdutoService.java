@@ -6,6 +6,7 @@ import backend.ASP.dto.ProdutoDTO;
 import backend.ASP.dto.ProdutoListagemDTO;
 import backend.ASP.entity.products.Produto;
 import backend.ASP.repository.ProdutoRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +52,14 @@ public class ProdutoService {
 
     public ProdutoDTO buscarPorId(Long id){
         Produto p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
         return new ProdutoDTO(p);
     }
 
     public ProdutoDTO atualizarProduto(Long id, ProdutoAtualizacaoDTO dto){
         log.info("Atualizando produto id={}", id);
-        Produto produto = repository.getReferenceById(id);
+        Produto produto = repository.findById(id)
+        .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
         produto.atualizarInformacoes(dto);
         Produto atualizado = repository.save(produto);
         log.info("Produto atualizado: id={}, nome={}", atualizado.getId(), atualizado.getNome());
@@ -66,7 +68,7 @@ public class ProdutoService {
 
     public void deletarProduto(Long id){
         Produto p = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
         log.warn("Solicitação de exclusão recebida para produto id={}", id);
         repository.delete(p);
         log.info("Produto excluído com sucesso: id={}", id);
@@ -74,7 +76,7 @@ public class ProdutoService {
 
     public ProdutoDTO adicionarImagem(Long id, MultipartFile imagem) {
         Produto produto = repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Produto não encontrado"));
+                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
 
 
         Produto salvo = repository.save(produto);
