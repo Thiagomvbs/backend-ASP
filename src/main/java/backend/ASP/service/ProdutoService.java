@@ -15,6 +15,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import backend.ASP.entity.products.Categoria;
+import backend.ASP.repository.ProdutoSpecs;
+import org.springframework.data.jpa.domain.Specification;
+
 import java.util.List;
 
 @Service
@@ -37,17 +41,21 @@ public class ProdutoService {
     }
 
     public Page<ProdutoListagemDTO> listarTodos(String nome, List<String> categorias, Pageable pageable){
+        Specification<Produto> filtro = (root, query, cb) -> cb.conjunction();
+
         if (nome != null && !nome.isBlank()) {
-            return repository.findByNomeContainingIgnoreCase(nome, pageable)
-                    .map(ProdutoListagemDTO::new);
+            filtro = filtro.and(ProdutoSpecs.nomeContem(nome));
         }
 
-        if (categorias != null && !categorias.isEmpty()) {
-            return repository.findByCategoriaIn(categorias, pageable)
-                    .map(ProdutoListagemDTO::new);
+        List<Categoria> categoriasValidas = categorias == null ? List.of() : categorias.stream()
+                .filter(c -> c != null && !c.isBlank())
+                .map(Categoria::fromString)
+                .toList();
+        if (!categoriasValidas.isEmpty()) {
+            filtro = filtro.and(ProdutoSpecs.categoriaEm(categoriasValidas));
         }
 
-        return repository.findAll(pageable).map(ProdutoListagemDTO::new);
+        return repository.findAll(filtro, pageable).map(ProdutoListagemDTO::new);
     }
 
     public ProdutoDTO buscarPorId(Long id){
