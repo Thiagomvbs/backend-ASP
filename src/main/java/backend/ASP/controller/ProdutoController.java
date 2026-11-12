@@ -53,7 +53,8 @@ public class ProdutoController {
     ) {
         int pageIndex = (page > 0) ? page - 1 : 0;
 
-        Pageable pageable = PageRequest.of(pageIndex, size, Sort.by("id").ascending());
+        int tamanho = Math.min(Math.max(size, 1), 100);
+        Pageable pageable = PageRequest.of(pageIndex, tamanho, Sort.by("id").ascending());
 
         return ResponseEntity.ok(service.listarTodos(nome, categorias, pageable));
     }

@@ -34,6 +34,7 @@ public class Produto {
         this.descricao = dto.descricao();
         this.categoria = Categoria.fromString(dto.categoria());
         this.preco = dto.preco();
+        this.imagem = dto.imagem();
 
     }
 
