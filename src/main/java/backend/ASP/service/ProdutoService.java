@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import backend.ASP.entity.products.Categoria;
 import backend.ASP.repository.ProdutoSpecs;
@@ -82,12 +81,4 @@ public class ProdutoService {
         log.info("Produto excluído com sucesso: id={}", id);
     }
 
-    public ProdutoDTO adicionarImagem(Long id, MultipartFile imagem) {
-        Produto produto = repository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Produto não encontrado"));
-
-
-        Produto salvo = repository.save(produto);
-        return new ProdutoDTO(salvo);
-    }
 }
