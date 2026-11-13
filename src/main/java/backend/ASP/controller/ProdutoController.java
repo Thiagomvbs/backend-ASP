@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.HttpStatus;
 
 import java.util.Arrays;
 import java.util.List;
@@ -35,14 +35,12 @@ public class ProdutoController {
         return ResponseEntity.ok(service.criarProduto(request));
     }
 
+    // Ainda não implementado: o armazenamento de imagens será decidido com a hospedagem.
     @PostMapping("/{id}/imagem")
-    @Transactional
-    public ResponseEntity<ProdutoDTO> uploadImagem(
-            @PathVariable Long id,
-            @RequestParam("imagem") MultipartFile imagem) {
-        ProdutoDTO atualizado = service.adicionarImagem(id, imagem);
-        return ResponseEntity.ok(atualizado);
+    public ResponseEntity<Void> uploadImagem(@PathVariable Long id) {
+        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).build();
     }
+    
 
     @GetMapping({"/", ""})
     public ResponseEntity<Page<ProdutoListagemDTO>> listarTodos(
