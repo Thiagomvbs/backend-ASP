@@ -54,6 +54,44 @@ public class RateLimiter {
         return permitido[0];
     }
 
+    /**
+     * Diz se a chave já atingiu o máximo na janela, SEM contar um novo pedido.
+     * Usado no login, onde só as tentativas que falham devem contar (veja {@link #registrar}).
+     */
+    public boolean excedeu(String chave) {
+        Instant inicioDaJanela = relogio.instant().minus(janela);
+        boolean[] excedido = new boolean[1];
+
+        registros.computeIfPresent(chave, (k, fila) -> {
+            while (!fila.isEmpty() && fila.peekFirst().isBefore(inicioDaJanela)) {
+                fila.pollFirst();
+            }
+            excedido[0] = fila.size() >= maximo;
+            return fila.isEmpty() ? null : fila;
+        });
+
+        return excedido[0];
+    }
+
+    /** Anota uma ocorrência (por exemplo, uma tentativa de login que falhou) para a chave. */
+    public void registrar(String chave) {
+        Instant agora = relogio.instant();
+        Instant inicioDaJanela = agora.minus(janela);
+
+        registros.compute(chave, (k, fila) -> {
+            Deque<Instant> pedidos = fila == null ? new ArrayDeque<>() : fila;
+            while (!pedidos.isEmpty() && pedidos.peekFirst().isBefore(inicioDaJanela)) {
+                pedidos.pollFirst();
+            }
+            pedidos.addLast(agora);
+            return pedidos;
+        });
+
+        if (registros.size() > LIMITE_DE_CHAVES_PARA_LIMPEZA) {
+            limpar(inicioDaJanela);
+        }
+    }
+
     private void limpar(Instant inicioDaJanela) {
         for (String chave : registros.keySet()) {
             registros.computeIfPresent(chave, (k, fila) ->
