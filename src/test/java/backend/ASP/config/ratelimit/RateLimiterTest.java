@@ -67,6 +67,38 @@ class RateLimiterTest {
     }
 
     @Test
+    void excedeSoDepoisDeRegistrarOMaximoDeOcorrencias() {
+        assertFalse(limiter.excedeu("admin"));
+        limiter.registrar("admin");
+        limiter.registrar("admin");
+        assertFalse(limiter.excedeu("admin"));
+        limiter.registrar("admin");
+        assertTrue(limiter.excedeu("admin"));
+    }
+
+    @Test
+    void consultarSeExcedeuNaoContaComoOcorrencia() {
+        for (int i = 0; i < 10; i++) {
+            assertFalse(limiter.excedeu("admin"));
+        }
+        limiter.registrar("admin");
+        limiter.registrar("admin");
+        assertFalse(limiter.excedeu("admin"));
+    }
+
+    @Test
+    void ocorrenciasExpiramDepoisDaJanela() {
+        for (int i = 0; i < 3; i++) {
+            limiter.registrar("admin");
+        }
+        assertTrue(limiter.excedeu("admin"));
+
+        relogio.avancar(Duration.ofMinutes(11));
+
+        assertFalse(limiter.excedeu("admin"));
+    }
+
+    @Test
     void cadaVisitanteTemOSeuProprioLimite() {
         for (int i = 0; i < 3; i++) {
             limiter.permitir("1.1.1.1");
